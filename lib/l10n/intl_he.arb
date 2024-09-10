@@ -167,5 +167,7 @@
   "emailHint": "הזן את כתובת האימייל שלך",
   "passwordHint": "הזן את הסיסמה שלך",
   "signUpWithGoogle": "הירשם באמצעות גוגל",
-  "loginWithGoogle": "התחבר באמצעות גוגל"
+  "loginWithGoogle": "התחבר באמצעות גוגל",
+  "continueAsGuest": "המשך כאורח",
+  "guestName": "אורח"
 }

@@ -170,6 +170,8 @@
   "emailHint": "Enter your email",
   "passwordHint": "Enter your password",
   "signUpWithGoogle": "Sign up with Google",
-  "loginWithGoogle": "Log in with Google"
+  "loginWithGoogle": "Log in with Google",
+  "continueAsGuest": "Continue As Guest",
+  "guestName": "Guest"
 }
 

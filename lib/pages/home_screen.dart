@@ -8,21 +8,22 @@ import 'package:carpool/pages/my_schedule_screen.dart';
 import 'package:carpool/pages/my_groups_screen.dart';
 import 'package:carpool/pages/my_profile_screen.dart';
 import 'package:carpool/pages/settings_screen.dart';
-import 'package:carpool/pages/about_screen.dart'; // Import the About screen
+import 'package:carpool/pages/about_screen.dart';
 import 'package:carpool/generated/l10n.dart';
 import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
   final void Function(Locale) onLocaleChange;
+  final String? guestUserName; // Null for logged-in users, "Guest (אורח)" for guest users
 
-  const HomeScreen({super.key, required this.onLocaleChange});
+  const HomeScreen({super.key, required this.onLocaleChange, this.guestUserName});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late String _firstName = 'User';
+  late String _firstName;
   late User? _user;
   bool _loading = true;
 
@@ -30,7 +31,17 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _user = FirebaseAuth.instance.currentUser;
-    _fetchUserDetails();
+
+    // Determine if user is a guest or logged in
+    if (widget.guestUserName != null) {
+      // Set up guest name directly
+      _firstName = widget.guestUserName!;
+      _loading = false;
+    } else {
+      // Fetch the logged-in user's details from Firebase
+      _firstName = 'User';
+      _fetchUserDetails();
+    }
   }
 
   Future<void> _fetchUserDetails() async {
@@ -54,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
     } else if (hour > 12 && hour < 17) {
       return localization.goodAfternoon(_firstName);
     } else if (hour > 17 && hour < 20) {
-      return localization.goodAfternoon(_firstName);
+      return localization.goodEvening(_firstName);
     } else {
       return localization.goodNight(_firstName);
     }
@@ -72,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Color primaryColor = const Color(0xFF1C4B93); // Adjusted color from the carpool logo
+    final Color primaryColor = const Color(0xFF1C4B93);
 
     return Scaffold(
       appBar: AppBar(

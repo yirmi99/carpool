@@ -93,6 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "האם אתה בטוח שברצונך לעזוב את הקבוצה הזו?"),
         "congratulations": MessageLookupByLibrary.simpleMessage(
             "ברכות! הצטרפת לקבוצת הנסיעה."),
+        "continueAsGuest": MessageLookupByLibrary.simpleMessage("המשך כאורח"),
         "createGroup": MessageLookupByLibrary.simpleMessage("צור קבוצה"),
         "createGroupPrompt":
             MessageLookupByLibrary.simpleMessage("?האם אתה מוכן ליצור קבוצה"),
@@ -161,6 +162,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "groupNameCreated": m12,
         "groupNotFound": MessageLookupByLibrary.simpleMessage("קבוצה לא נמצאה"),
         "groupPage": MessageLookupByLibrary.simpleMessage("עמוד הקבוצה"),
+        "guestName": MessageLookupByLibrary.simpleMessage("אורח"),
         "hi": m13,
         "home": MessageLookupByLibrary.simpleMessage("בית"),
         "howManyChildren": MessageLookupByLibrary.simpleMessage(

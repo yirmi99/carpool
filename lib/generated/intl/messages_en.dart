@@ -101,6 +101,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Are you sure you want to leave this group?"),
         "congratulations": MessageLookupByLibrary.simpleMessage(
             "Congratulations! You’ve joined the ride group."),
+        "continueAsGuest":
+            MessageLookupByLibrary.simpleMessage("Continue As Guest"),
         "createGroup": MessageLookupByLibrary.simpleMessage("Create Group"),
         "createGroupPrompt": MessageLookupByLibrary.simpleMessage(
             "Are you ready to create a group?"),
@@ -177,6 +179,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "groupNotFound":
             MessageLookupByLibrary.simpleMessage("Group not found"),
         "groupPage": MessageLookupByLibrary.simpleMessage("Group Page"),
+        "guestName": MessageLookupByLibrary.simpleMessage("Guest"),
         "hi": m13,
         "home": MessageLookupByLibrary.simpleMessage("Home"),
         "howManyChildren": MessageLookupByLibrary.simpleMessage(

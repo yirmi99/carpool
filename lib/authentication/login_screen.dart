@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:carpool/pages/home_screen.dart';
 import 'package:carpool/generated/l10n.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -94,6 +95,24 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  // Guest login functionality
+  Future<void> _continueAsGuest() async {
+    // Get the localized guest name
+    final guestName = S.of(context).guestName;  // 'Guest' or 'אורח' based on locale
+
+    // Navigate to HomeScreen with the localized guest name
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeScreen(
+          onLocaleChange: widget.onLocaleChange,
+          guestUserName: guestName,
+        ),
+      ),
+    );
+  }
+
+
   Widget _buildTextField(TextEditingController controller, String label, String hintText) {
     return TextField(
       controller: controller,
@@ -171,6 +190,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 icon: Image.asset('assets/images/google_icon.png', height: 24, width: 24),
                 label: Text(S.of(context).loginWithGoogle),
+              ),
+              const SizedBox(height: 20),
+
+              // Continue as Guest button below Google Sign-In
+              TextButton(
+                onPressed: _continueAsGuest,
+                child: Text(
+                  S.of(context).continueAsGuest,
+                  style: TextStyle(color: primaryColor, fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
               const SizedBox(height: 20),
               Divider(
