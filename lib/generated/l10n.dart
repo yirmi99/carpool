@@ -1679,6 +1679,86 @@ class S {
       args: [userName, groupName],
     );
   }
+
+  /// `Complete your Sign-Up`
+  String get completeSignUp {
+    return Intl.message(
+      'Complete your Sign-Up',
+      name: 'completeSignUp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get save {
+    return Intl.message(
+      'Save',
+      name: 'save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your first name`
+  String get firstNameHint {
+    return Intl.message(
+      'Enter your first name',
+      name: 'firstNameHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your last name`
+  String get lastNameHint {
+    return Intl.message(
+      'Enter your last name',
+      name: 'lastNameHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your email`
+  String get emailHint {
+    return Intl.message(
+      'Enter your email',
+      name: 'emailHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your password`
+  String get passwordHint {
+    return Intl.message(
+      'Enter your password',
+      name: 'passwordHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign up with Google`
+  String get signUpWithGoogle {
+    return Intl.message(
+      'Sign up with Google',
+      name: 'signUpWithGoogle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Log in with Google`
+  String get loginWithGoogle {
+    return Intl.message(
+      'Log in with Google',
+      name: 'loginWithGoogle',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

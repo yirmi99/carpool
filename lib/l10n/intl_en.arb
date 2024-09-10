@@ -1,4 +1,5 @@
 {
+  "@@locale": "en",
   "appTitle": "Carpool Management",
   "loginTitle": "Login",
   "welcomeBack": "Welcome back!",
@@ -161,6 +162,14 @@
   "aboutTitle": "About This App",
   "aboutDescription": "This app helps you manage carpools for your children efficiently.\n It allows you to create and join carpool groups, plan travel schedules, chat with other group members, and track live locations of rides.\n Our aim is to make carpooling convenient and safe for parents and their children.",
   "cancelRideMessageToChat": "{userName} canceled his ride on {date}",
-  "leaveGroupMessageToChat": "{userName} left the group {groupName}"
+  "leaveGroupMessageToChat": "{userName} left the group {groupName}",
+  "completeSignUp": "Complete your Sign-Up",
+  "save": "Save",
+  "firstNameHint": "Enter your first name",
+  "lastNameHint": "Enter your last name",
+  "emailHint": "Enter your email",
+  "passwordHint": "Enter your password",
+  "signUpWithGoogle": "Sign up with Google",
+  "loginWithGoogle": "Log in with Google"
 }
 
