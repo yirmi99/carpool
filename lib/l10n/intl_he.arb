@@ -1,4 +1,5 @@
 {
+  "@@locale": "he",
   "appTitle": "ניהול קארפול",
   "loginTitle": "התחברות",
   "welcomeBack": "ברוך שובך!",
@@ -130,7 +131,7 @@
   "endDate": "סיום:",
   "enterEmailForReset": "הכנס את המייל שאיתו נרשמת",
   "resetPasswordLinkSent": "קישור לאיפוס סיסמה נשלח אל המייל",
-  "signInWithGoogle": "התחבר באמצעות גוגל",
+  "signInWithGoogle": "הרשם באמצעות גוגל",
   "enterEmailToResetPassword": "הכנס את האימייל שנרשמת איתו עבור שחזור הסיסמה",
   "passwordResetEmailSent": "נשלח אלייך מייל לאיפוס סיסמה",
   "signInWithFacebook": "התחבר באמצעות פייסבוק",
@@ -158,5 +159,13 @@
   "aboutTitle": "אודות אפליקציה זו",
   "aboutDescription": "אפליקציה זו עוזרת לך לנהל נסיעות משותפות לילדיך בצורה יעילה.\n היא מאפשרת לך ליצור ולהצטרף לקבוצות נסיעות משותפות, לתכנן לוחות זמנים לנסיעות, לשוחח עם חברי הקבוצה ולעקוב אחר מיקומים בזמן אמת של הנסיעות.\n המטרה שלנו היא להפוך את הנסיעות המשותפות לנוחות ובטוחות להורים ולילדיהם.",
   "cancelRideMessageToChat": "{userName} ביטל את הנסיעה שלו בתאריך {date}",
-  "leaveGroupMessageToChat": "המשתמש {userName} עזב הקבוצה"
+  "leaveGroupMessageToChat": "המשתמש {userName} עזב הקבוצה",
+  "completeSignUp": "השלם את ההרשמה שלך",
+  "save": "שמור",
+  "firstNameHint": "הזן את השם הפרטי שלך",
+  "lastNameHint": "הזן את שם המשפחה שלך",
+  "emailHint": "הזן את כתובת האימייל שלך",
+  "passwordHint": "הזן את הסיסמה שלך",
+  "signUpWithGoogle": "הירשם באמצעות גוגל",
+  "loginWithGoogle": "התחבר באמצעות גוגל"
 }

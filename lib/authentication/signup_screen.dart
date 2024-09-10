@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:carpool/pages/home_screen.dart';
 import 'package:carpool/generated/l10n.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:carpool/methods/common_methods.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -26,25 +27,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final CommonMethods commonMethods = CommonMethods();
   String _errorMessage = '';
   bool _isOtherSelected = false;
-
-  bool _validatePassword(String password) {
-    return password.length >= 6 && RegExp(r'^(?=.*[a-zA-Z])(?=.*\d)').hasMatch(password);
-  }
+  bool _isGoogleSignUp = false;
 
   Future<void> _signUp() async {
-    final password = _passwordController.text.trim();
-    final passwordRegExp = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$');
-    if (!passwordRegExp.hasMatch(password)) {
-      setState(() {
-        _errorMessage = S.of(context).passwordRequirementMessage;
-      });
-      return;
-    }
-
     try {
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
-        password: password,
+        password: _passwordController.text.trim(),
       );
 
       if (userCredential.user != null) {
@@ -52,14 +41,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         await userCredential.user!.reload();
         User? updatedUser = _auth.currentUser;
 
-        // Save user details in Firestore
-        FirebaseFirestore.instance.collection('users').doc(updatedUser!.uid).set({
-          'firstName': _firstNameController.text.trim(),
-          'lastName': _lastNameController.text.trim(),
-          'email': _emailController.text.trim(),
-          'numberOfChildren': _childrenController.text.trim(),
-          'departureLocation': _departureController.text.trim(),
-        });
+        await _saveUserDetailsToFirestore(updatedUser!.uid);
 
         if (context.mounted) {
           Navigator.pushReplacement(
@@ -80,19 +62,167 @@ class _SignUpScreenState extends State<SignUpScreen> {
       setState(() {
         _errorMessage = e.message ?? S.of(context).unknownError;
       });
+    }
+  }
+
+  Future<void> _signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        return;
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      UserCredential userCredential = await _auth.signInWithCredential(credential);
+
+      if (userCredential.additionalUserInfo?.isNewUser == true) {
+        setState(() {
+          _isGoogleSignUp = true;
+        });
+        await _showAdditionalFieldsForm(userCredential.user);
+      }
+
+      if (context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(
+              onLocaleChange: widget.onLocaleChange,
+            ),
+          ),
+        );
+      }
     } catch (e) {
       setState(() {
-        _errorMessage = S.of(context).unknownError;
+        _errorMessage = 'Google Sign-Up failed: $e';
       });
     }
   }
 
-  void _signInWithGoogle() {
-    // Add your Google Sign-In logic here
+  Future<void> _saveUserDetailsToFirestore(String userId) async {
+    await FirebaseFirestore.instance.collection('users').doc(userId).set({
+      'firstName': _firstNameController.text.trim(),
+      'lastName': _lastNameController.text.trim(),
+      'email': _emailController.text.trim(),
+      'numberOfChildren': _childrenController.text.trim(),
+      'departureLocation': _departureController.text.trim(),
+    });
   }
 
-  void _signInWithFacebook() {
-    // Add your Facebook Sign-In logic here
+  Future<void> _showAdditionalFieldsForm(User? user) async {
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(S.of(context).completeSignUp),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                _buildTextField(_firstNameController, S.of(context).firstName, S.of(context).firstNameHint),
+                const SizedBox(height: 16),
+                _buildTextField(_lastNameController, S.of(context).lastName, S.of(context).lastNameHint),
+                const SizedBox(height: 16),
+                _buildDropdown(),
+                const SizedBox(height: 16),
+                _buildTypeAheadField(),
+              ],
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () async {
+                if (user != null) {
+                  await _saveUserDetailsToFirestore(user.uid);
+                  Navigator.pop(context);
+                }
+              },
+              child: Text(S.of(context).save),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label, String hintText) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hintText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        filled: true,
+        fillColor: Colors.grey[100],
+      ),
+    );
+  }
+
+  Widget _buildDropdown() {
+    return DropdownButtonFormField(
+      value: _childrenController.text.isEmpty ? null : _childrenController.text,
+      items: [
+        const DropdownMenuItem(value: '1', child: Text('1')),
+        const DropdownMenuItem(value: '2', child: Text('2')),
+        const DropdownMenuItem(value: '3', child: Text('3')),
+        const DropdownMenuItem(value: '4', child: Text('4')),
+        const DropdownMenuItem(value: '5', child: Text('5')),
+        DropdownMenuItem(value: 'other', child: Text(S.of(context).other)),
+      ],
+      onChanged: (value) {
+        setState(() {
+          if (value == 'other') {
+            _isOtherSelected = true;
+            _childrenController.clear();
+          } else {
+            _isOtherSelected = false;
+            _childrenController.text = value as String;
+          }
+        });
+      },
+      decoration: InputDecoration(
+        labelText: S.of(context).numberOfChildrenLabel,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        filled: true,
+        fillColor: Colors.grey[100],
+      ),
+    );
+  }
+
+  Widget _buildTypeAheadField() {
+    return TypeAheadFormField(
+      textFieldConfiguration: TextFieldConfiguration(
+        controller: _departureController,
+        decoration: InputDecoration(
+          labelText: S.of(context).departureLocation,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          filled: true,
+          fillColor: Colors.grey[100],
+        ),
+      ),
+      suggestionsCallback: (pattern) async {
+        return await commonMethods.getAddresses(_departureController.text, pattern);
+      },
+      itemBuilder: (context, suggestion) {
+        return ListTile(
+          title: Text(suggestion.toString()),
+        );
+      },
+      onSuggestionSelected: (suggestion) {
+        _departureController.text = suggestion.toString();
+      },
+    );
   }
 
   @override
@@ -101,7 +231,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -109,153 +239,51 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(height: 50),
               Text(
                 S.of(context).signupTitle,
-                style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
               Text(
                 S.of(context).createNewAccount,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey[700]),
+                style: TextStyle(fontSize: 20, color: Colors.grey[600]),
               ),
-              const SizedBox(height: 30),
-              TextField(
-                controller: _firstNameController,
-                decoration: InputDecoration(
-                  labelText: S.of(context).firstName,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _lastNameController,
-                decoration: InputDecoration(
-                  labelText: S.of(context).lastName,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: S.of(context).email,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: S.of(context).password,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  suffixIcon: const Icon(Icons.visibility_off),
-                ),
-                obscureText: true,
-              ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField(
-                value: _childrenController.text.isEmpty ? null : _childrenController.text,
-                items: [
-                  const DropdownMenuItem(value: '1', child: Text('1')),
-                  const DropdownMenuItem(value: '2', child: Text('2')),
-                  const DropdownMenuItem(value: '3', child: Text('3')),
-                  const DropdownMenuItem(value: '4', child: Text('4')),
-                  const DropdownMenuItem(value: '5', child: Text('5')),
-                  DropdownMenuItem(value: 'other', child: Text(S.of(context).other)),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    if (value == 'other') {
-                      _isOtherSelected = true;
-                      _childrenController.clear();
-                    } else {
-                      _isOtherSelected = false;
-                      _childrenController.text = value as String;
-                    }
-                  });
-                },
-                decoration: InputDecoration(
-                  labelText: S.of(context).numberOfChildrenLabel,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-              if (_isOtherSelected)
+              const SizedBox(height: 40),
+              if (!_isGoogleSignUp) ...[
+                _buildTextField(_firstNameController, S.of(context).firstName, S.of(context).firstNameHint),
+                const SizedBox(height: 16),
+                _buildTextField(_lastNameController, S.of(context).lastName, S.of(context).lastNameHint),
+                const SizedBox(height: 16),
+                _buildTextField(_emailController, S.of(context).email, S.of(context).emailHint),
+                const SizedBox(height: 16),
                 TextField(
-                  controller: _childrenController,
+                  controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: S.of(context).enterNumberOfChildren,
+                    labelText: S.of(context).password,
+                    hintText: S.of(context).passwordHint,
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(15),
                     ),
+                    suffixIcon: const Icon(Icons.visibility_off),
+                    filled: true,
+                    fillColor: Colors.grey[100],
                   ),
-                  keyboardType: TextInputType.number,
+                  obscureText: true,
                 ),
+                const SizedBox(height: 16),
+              ],
+              _buildDropdown(),
               const SizedBox(height: 16),
-              TypeAheadFormField(
-                textFieldConfiguration: TextFieldConfiguration(
-                  controller: _departureController,
-                  decoration: InputDecoration(
-                    labelText: S.of(context).departureLocation,
-                    hintText: '', // Removed text
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                suggestionsCallback: (pattern) async {
-                  return await commonMethods.getAddresses(_departureController.text, pattern);
-                },
-                itemBuilder: (context, suggestion) {
-                  return ListTile(
-                    title: Text(suggestion.toString()),
-                  );
-                },
-                onSuggestionSelected: (suggestion) {
-                  _departureController.text = suggestion.toString();
-                },
-              ),
-              const SizedBox(height: 20),
+              _buildTypeAheadField(),
+              const SizedBox(height: 30),
               ElevatedButton(
-                onPressed: _signUp,
+                onPressed: _isGoogleSignUp ? null : _signUp,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryColor,
                   padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),
-                child: Text(
-                  S.of(context).signup,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-                ),
+                child: Text(S.of(context).signup, style: const TextStyle(fontSize: 20, color: Colors.white)),
               ),
-              if (_errorMessage.isNotEmpty)
-                Text(
-                  _errorMessage,
-                  style: const TextStyle(color: Colors.red),
-                ),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(S.of(context).alreadyHaveAnAccount),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text(S.of(context).loginButton, style: TextStyle(color: primaryColor)),
-                  ),
-                ],
-              ),
-              const Divider(),
               ElevatedButton.icon(
                 onPressed: _signInWithGoogle,
                 style: ElevatedButton.styleFrom(
@@ -268,22 +296,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 icon: Image.asset('assets/images/google_icon.png', height: 24, width: 24),
-                label: Text(S.of(context).signInWithGoogle),
+                label: Text(S.of(context).signUpWithGoogle),
+              ),
+              const SizedBox(height: 20),
+              Divider(
+                color: Colors.grey.shade300,
+                thickness: 1.5,
               ),
               const SizedBox(height: 10),
-              ElevatedButton.icon(
-                onPressed: _signInWithFacebook,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(S.of(context).alreadyHaveAnAccount),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(S.of(context).loginButton, style: TextStyle(color: primaryColor)),
+                  ),
+                ],
+              ),
+              if (_errorMessage.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Text(
+                    _errorMessage,
+                    style: const TextStyle(color: Colors.red),
                   ),
                 ),
-                icon: Image.asset('assets/images/facebook_icon.png', height: 24, width: 24),
-                label: Text(S.of(context).signInWithFacebook),
-              ),
             ],
           ),
         ),

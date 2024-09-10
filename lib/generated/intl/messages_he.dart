@@ -85,6 +85,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "chooseSearchOption":
             MessageLookupByLibrary.simpleMessage("בחר סוג חיפוש"),
         "close": MessageLookupByLibrary.simpleMessage("סגור"),
+        "completeSignUp":
+            MessageLookupByLibrary.simpleMessage("השלם את ההרשמה שלך"),
         "confirmCancelRide":
             MessageLookupByLibrary.simpleMessage("אישור ביטול נסיעה"),
         "confirmLeaveGroup": MessageLookupByLibrary.simpleMessage(
@@ -112,6 +114,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "driverReturning": m6,
         "editDetails": MessageLookupByLibrary.simpleMessage("ערוך פרטים"),
         "email": MessageLookupByLibrary.simpleMessage("אימייל"),
+        "emailHint":
+            MessageLookupByLibrary.simpleMessage("הזן את כתובת האימייל שלך"),
         "endDate": MessageLookupByLibrary.simpleMessage("סיום:"),
         "enterAddress": MessageLookupByLibrary.simpleMessage("הזן כתובת"),
         "enterCity": MessageLookupByLibrary.simpleMessage("הזן עיר"),
@@ -137,6 +141,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "filterByDestination":
             MessageLookupByLibrary.simpleMessage("סינון לפי עיר"),
         "firstName": MessageLookupByLibrary.simpleMessage("שם פרטי"),
+        "firstNameHint":
+            MessageLookupByLibrary.simpleMessage("הזן את השם הפרטי שלך"),
         "forgotPassword": MessageLookupByLibrary.simpleMessage("שכחת סיסמה?"),
         "friday": MessageLookupByLibrary.simpleMessage("שישי"),
         "from": m7,
@@ -167,6 +173,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "join": MessageLookupByLibrary.simpleMessage("הצטרף"),
         "joinGroup": MessageLookupByLibrary.simpleMessage("הצטרף לקבוצה"),
         "lastName": MessageLookupByLibrary.simpleMessage("שם משפחה"),
+        "lastNameHint":
+            MessageLookupByLibrary.simpleMessage("הזן את שם המשפחה שלך"),
         "leaveGroup":
             MessageLookupByLibrary.simpleMessage("עזוב את קבוצת הנסיעה הזו"),
         "leaveGroupMessage": m15,
@@ -177,6 +185,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "loginPrompt":
             MessageLookupByLibrary.simpleMessage("כבר יש לך חשבון? התחבר"),
         "loginTitle": MessageLookupByLibrary.simpleMessage("התחברות"),
+        "loginWithGoogle":
+            MessageLookupByLibrary.simpleMessage("התחבר באמצעות גוגל"),
         "lookAround": MessageLookupByLibrary.simpleMessage("הסתכל סביבך"),
         "map": MessageLookupByLibrary.simpleMessage("מפה"),
         "maxDistanceFromDestination": MessageLookupByLibrary.simpleMessage(
@@ -212,6 +222,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "password": MessageLookupByLibrary.simpleMessage("סיסמה"),
         "passwordErrorMessage": MessageLookupByLibrary.simpleMessage(
             "שגיאה: הסיסמה אינה עומדת בדרישות."),
+        "passwordHint":
+            MessageLookupByLibrary.simpleMessage("הזן את הסיסמה שלך"),
         "passwordRequirementMessage": MessageLookupByLibrary.simpleMessage(
             "הסיסמה חייבת לכלול לפחות 6 תווים הכוללים אות אחת ומספר אחד."),
         "passwordResetEmailSent": MessageLookupByLibrary.simpleMessage(
@@ -230,6 +242,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "roundTrip": MessageLookupByLibrary.simpleMessage("הלוך-חזור"),
         "roundTripQuestion": MessageLookupByLibrary.simpleMessage(
             "Do you want this group to be for round trips?"),
+        "save": MessageLookupByLibrary.simpleMessage("שמור"),
         "saveDetails": MessageLookupByLibrary.simpleMessage("שמור עדכונים"),
         "searchByOpenSearch":
             MessageLookupByLibrary.simpleMessage("חיפוש חופשי"),
@@ -250,9 +263,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "signInWithFacebook":
             MessageLookupByLibrary.simpleMessage("התחבר באמצעות פייסבוק"),
         "signInWithGoogle":
-            MessageLookupByLibrary.simpleMessage("התחבר באמצעות גוגל"),
+            MessageLookupByLibrary.simpleMessage("הרשם באמצעות גוגל"),
         "signOut": MessageLookupByLibrary.simpleMessage("התנתקות"),
         "signUpPrompt": MessageLookupByLibrary.simpleMessage("אין לך חשבון?"),
+        "signUpWithGoogle":
+            MessageLookupByLibrary.simpleMessage("הירשם באמצעות גוגל"),
         "signup": MessageLookupByLibrary.simpleMessage("הרשמה"),
         "signupButton": MessageLookupByLibrary.simpleMessage("הירשם"),
         "signupTitle": MessageLookupByLibrary.simpleMessage("הרשמה"),

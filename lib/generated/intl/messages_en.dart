@@ -93,6 +93,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "chooseSearchOption":
             MessageLookupByLibrary.simpleMessage("Choose Searching Option"),
         "close": MessageLookupByLibrary.simpleMessage("Close"),
+        "completeSignUp":
+            MessageLookupByLibrary.simpleMessage("Complete your Sign-Up"),
         "confirmCancelRide":
             MessageLookupByLibrary.simpleMessage("Confirm Cancellation"),
         "confirmLeaveGroup": MessageLookupByLibrary.simpleMessage(
@@ -123,6 +125,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "driverReturning": m6,
         "editDetails": MessageLookupByLibrary.simpleMessage("Edit Details"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
+        "emailHint": MessageLookupByLibrary.simpleMessage("Enter your email"),
         "endDate": MessageLookupByLibrary.simpleMessage("End Date"),
         "enterAddress": MessageLookupByLibrary.simpleMessage("Enter Address"),
         "enterCity": MessageLookupByLibrary.simpleMessage("Enter City"),
@@ -149,6 +152,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "filterByDestination":
             MessageLookupByLibrary.simpleMessage("Filter by destination"),
         "firstName": MessageLookupByLibrary.simpleMessage("First Name"),
+        "firstNameHint":
+            MessageLookupByLibrary.simpleMessage("Enter your first name"),
         "forgotPassword":
             MessageLookupByLibrary.simpleMessage("Forgot Password?"),
         "friday": MessageLookupByLibrary.simpleMessage("Friday"),
@@ -185,6 +190,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "join": MessageLookupByLibrary.simpleMessage("Join"),
         "joinGroup": MessageLookupByLibrary.simpleMessage("Join Group"),
         "lastName": MessageLookupByLibrary.simpleMessage("Last Name"),
+        "lastNameHint":
+            MessageLookupByLibrary.simpleMessage("Enter your last name"),
         "leaveGroup":
             MessageLookupByLibrary.simpleMessage("Leave This Ride Group"),
         "leaveGroupDetailedMessage": m14,
@@ -196,6 +203,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "loginPrompt": MessageLookupByLibrary.simpleMessage(
             "Already have an account? Login"),
         "loginTitle": MessageLookupByLibrary.simpleMessage("Login"),
+        "loginWithGoogle":
+            MessageLookupByLibrary.simpleMessage("Log in with Google"),
         "lookAround": MessageLookupByLibrary.simpleMessage("Look around you"),
         "map": MessageLookupByLibrary.simpleMessage("Map"),
         "maxDistanceFromDestination": MessageLookupByLibrary.simpleMessage(
@@ -233,6 +242,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "password": MessageLookupByLibrary.simpleMessage("Password"),
         "passwordErrorMessage": MessageLookupByLibrary.simpleMessage(
             "Error: Password does not meet the requirements."),
+        "passwordHint":
+            MessageLookupByLibrary.simpleMessage("Enter your password"),
         "passwordRequirementMessage": MessageLookupByLibrary.simpleMessage(
             "Password must contain at least 6 characters including one letter and one number."),
         "passwordResetEmailSent": MessageLookupByLibrary.simpleMessage(
@@ -252,6 +263,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "roundTrip": MessageLookupByLibrary.simpleMessage("Round Trip"),
         "roundTripQuestion": MessageLookupByLibrary.simpleMessage(
             "Do you want this group to be for round trips?"),
+        "save": MessageLookupByLibrary.simpleMessage("Save"),
         "saveDetails": MessageLookupByLibrary.simpleMessage("Save Details"),
         "searchByOpenSearch":
             MessageLookupByLibrary.simpleMessage("Searching by Open Search"),
@@ -280,6 +292,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "signOut": MessageLookupByLibrary.simpleMessage("Sign Out"),
         "signUpPrompt": MessageLookupByLibrary.simpleMessage(
             "Don\'t have an account? Sign up"),
+        "signUpWithGoogle":
+            MessageLookupByLibrary.simpleMessage("Sign up with Google"),
         "signup": MessageLookupByLibrary.simpleMessage("Sign Up"),
         "signupButton": MessageLookupByLibrary.simpleMessage("SignUp"),
         "signupTitle": MessageLookupByLibrary.simpleMessage("Signup"),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:carpool/pages/home_screen.dart';
 import 'package:carpool/generated/l10n.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -19,24 +20,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String _errorMessage = '';
 
-  bool _validatePassword(String password) {
-    return password.length >= 6 && RegExp(r'^(?=.*[a-zA-Z])(?=.*\d)').hasMatch(password);
-  }
-
   Future<void> _login() async {
-    final password = _passwordController.text.trim();
-    final passwordRegExp = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$');
-    if (!passwordRegExp.hasMatch(password)) {
-      setState(() {
-        _errorMessage = S.of(context).passwordRequirementMessage;
-      });
-      return;
-    }
-
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
-        password: password,
+        password: _passwordController.text.trim(),
       );
 
       if (context.mounted) {
@@ -51,11 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } on FirebaseAuthException catch (e) {
       setState(() {
-        if (e.code == 'wrong-password') {
-          _errorMessage = S.of(context).incorrectPasswordMessage;
-        } else {
-          _errorMessage = e.message ?? 'An unknown error occurred';
-        }
+        _errorMessage = e.message ?? S.of(context).unknownError;
       });
     }
   }
@@ -80,12 +64,49 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void _signInWithGoogle() {
-    //TODO: Sign-In logic here
+  Future<void> _signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        return;
+      }
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      await _auth.signInWithCredential(credential);
+
+      if (context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(
+              onLocaleChange: widget.onLocaleChange,
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Google Sign-In failed: $e';
+      });
+    }
   }
 
-  void _signInWithFacebook() {
-    //TODO: Sign-In logic here
+  Widget _buildTextField(TextEditingController controller, String label, String hintText) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hintText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        filled: true,
+        fillColor: Colors.grey[100],
+      ),
+    );
   }
 
   @override
@@ -94,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -102,35 +123,17 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 50),
               Text(
                 S.of(context).loginTitle,
-                style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
               Text(
                 S.of(context).welcomeBack,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey[700]),
+                style: TextStyle(fontSize: 20, color: Colors.grey[600]),
               ),
-              const SizedBox(height: 30),
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: S.of(context).enterUsernameOrEmail,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
+              const SizedBox(height: 40),
+              _buildTextField(_emailController, S.of(context).enterUsernameOrEmail, S.of(context).emailHint),
               const SizedBox(height: 16),
-              TextField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: S.of(context).enterYourPassword,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  suffixIcon: const Icon(Icons.visibility_off),
-                ),
-                obscureText: true,
-              ),
+              _buildTextField(_passwordController, S.of(context).enterYourPassword, S.of(context).passwordHint),
               const SizedBox(height: 16),
               Align(
                 alignment: Alignment.centerRight,
@@ -142,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: _login,
                 style: ElevatedButton.styleFrom(
@@ -152,17 +155,29 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: Text(
-                  S.of(context).loginTitle,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-                ),
+                child: Text(S.of(context).loginTitle, style: const TextStyle(fontSize: 20, color: Colors.white)),
               ),
-              if (_errorMessage.isNotEmpty)
-                Text(
-                  _errorMessage,
-                  style: const TextStyle(color: Colors.red),
-                ),
               const SizedBox(height: 20),
+              ElevatedButton.icon(
+                onPressed: _signInWithGoogle,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    side: BorderSide(color: primaryColor),
+                  ),
+                ),
+                icon: Image.asset('assets/images/google_icon.png', height: 24, width: 24),
+                label: Text(S.of(context).loginWithGoogle),
+              ),
+              const SizedBox(height: 20),
+              Divider(
+                color: Colors.grey.shade300,
+                thickness: 1.5,
+              ),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -180,35 +195,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-              const Divider(),
-              ElevatedButton.icon(
-                onPressed: _signInWithGoogle,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    side: BorderSide(color: primaryColor),
+              if (_errorMessage.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Text(
+                    _errorMessage,
+                    style: const TextStyle(color: Colors.red),
                   ),
                 ),
-                icon: Image.asset('assets/images/google_icon.png', height: 24, width: 24),
-                label: Text(S.of(context).signInWithGoogle),
-              ),
-              const SizedBox(height: 10),
-              ElevatedButton.icon(
-                onPressed: _signInWithFacebook,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                icon: Image.asset('assets/images/facebook_icon.png', height: 24, width: 24),
-                label: Text(S.of(context).signInWithFacebook),
-              ),
             ],
           ),
         ),
