@@ -50,6 +50,3 @@ To set up and run the Carpool app on your local machine, follow these steps:
 
 3. **Run the app**:
    flutter run
-
-## License
-This project is licensed under the MIT License.
