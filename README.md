@@ -16,26 +16,6 @@ Many parents face the challenge of transporting their children to school, extrac
 - **Firebase**: Used for real-time data synchronization.
 - **Google Maps API**: Integrated for mapping and location services.
 
-## Installation
-
-To run the Carpool app on your local machine, follow these steps:
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/yirmi99/carpool.git
-   cd carpool
-   ```
-
-2. **Install dependencies**:
-   ```bash
-   flutter pub get
-   ```
-
-3. **Run the app**:
-   ```bash
-   flutter run
-   ```
-
 ## Installation and Running the App
 
 To set up and run the Carpool app on your local machine, follow these steps:
